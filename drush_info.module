@@ -1,0 +1,195 @@
+<?php
+
+/**
+ * @file
+ * Show custom drush commands that are part of a module.
+ *
+ * Displays the following data for each Drush command:
+ *   - Command
+ *   - Aliases
+ *   - Callback
+ *   - Description
+ *   - Arguments
+ *   - Options
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function drush_info_menu() {
+  $items['admin/drush-info'] = array(
+    'title' => 'Drush Commands from Modules',
+    'description' => 'Show custom drush commands from modules.',
+    'page callback' => 'drush_info_main_page_callback',
+    'access arguments' => array('access administration menu'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+function drush_info_main_page_callback() {
+  $build = array();
+
+  $query = db_select('system', 's')
+    ->fields('s')
+    ->condition('status', '1', '=')
+    ->orderBy('name', 'ASC');
+
+  $result = $query->execute()->fetchAll();
+
+  foreach ($result as $module) {
+    $module_name = $module->name;
+
+    if (module_load_include('inc', $module_name, $module_name . '.drush')) {
+      $rows = array();
+
+      $commands = call_user_func($module_name . '_' . 'drush_command');
+
+      foreach ($commands as $command => $value) {
+        $row = array(
+          $command,
+          isset($value['aliases']) ? implode(', ', $value['aliases']) : '',
+          isset($value['callback']) ? $value['callback'] : 'drush_' . str_replace('-', '_', $command),
+          isset($value['description']) ? $value['description'] : '',
+        );
+
+        if (isset($value['arguments'])) {
+          $argument_text = '';
+
+          foreach ($value['arguments'] as $key => $val) {
+            $argument_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
+          }
+          $row[] = $argument_text;
+        }
+        else {
+          $row[] = '';
+        }
+
+        if (isset($value['options'])) {
+          $options_text = '';
+
+          foreach ($value['options'] as $key => $val) {
+            $options_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
+          }
+          $row[] = $options_text;
+        }
+        else {
+          $row[] = '';
+        }
+
+        if (isset($value['examples'])) {
+          $examples_text = '';
+
+          foreach ($value['examples'] as $key => $val) {
+            $examples_text .= '<h3><code>' . $key . '</code></h3>' . $val . '<br /><br />';
+          }
+          $row[] = $examples_text;
+        }
+        else {
+          $row[] = '';
+        }
+
+        $rows[] = $row;
+      }
+
+      $build[$module_name] = array(
+        '#type' => 'fieldset',
+        '#title' => $module->name,
+      );
+      $build[$module_name]['output_table'] = array(
+        '#theme' => 'table',
+        '#header' => array(
+          t('Command'),
+          t('Aliases'),
+          t('Callback'),
+          t('Description'),
+          t('Arguments'),
+          t('Options'),
+          t('Examples'),
+        ),
+        '#rows' => $rows,
+      );
+    }
+  }
+
+  return $build;
+}
+
+if (!function_exists('dt')) {
+  function dt($string, $args = array()) {
+    $output = NULL;
+    if (function_exists('t') && drush_drupal_major_version() == 7) {
+      $output = t($string, $args);
+    }
+    // The language system requires a working container which has the string
+    // translation service.
+    else if (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
+      $output = \Drupal::translation()->translate($string, $args);
+    }
+    else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
+      $output = t($string, $args);
+    }
+
+    // If Drupal's t() function unavailable.
+    if (!isset($output)) {
+      if (!empty($args)) {
+        $output = strtr($string, $args);
+      }
+      else {
+        $output = $string;
+      }
+    }
+    return $output;
+  }
+}
+
+if (!function_exists('drush_drupal_major_version')) {
+  function drush_drupal_major_version($drupal_root = NULL) {
+    $major_version = FALSE;
+    if ($version = drush_drupal_version($drupal_root)) {
+      $version_parts = explode('.', $version);
+      if (is_numeric($version_parts[0])) {
+        $major_version = (integer) $version_parts[0];
+      }
+    }
+    return $major_version;
+  }
+}
+
+if (!function_exists('drush_drupal_version')) {
+  function drush_drupal_version($drupal_root = NULL) {
+    static $version = FALSE;
+
+    if (!$version) {
+      if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
+        // D7 stores VERSION in bootstrap.inc. D8 moved that to /core/includes.
+        $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc', '/core/includes/bootstrap.inc');
+        foreach ($version_constant_paths as $path) {
+          if (file_exists($drupal_root . $path)) {
+            require_once $drupal_root . $path;
+          }
+        }
+        // We just might be dealing with an early Drupal version (pre 4.7)
+        if (defined('VERSION')) {
+          $version = VERSION;
+        }
+      }
+    }
+    return $version;
+  }
+}
+
+if (!function_exists('drush_get_context')) {
+  function &drush_get_context($context = NULL, $default = NULL) {
+    static $cache = array();
+    if (!is_null($context)) {
+      if (!isset($cache[$context])) {
+        $default = is_null($default) ? array() : $default;
+        $cache[$context] = $default;
+      }
+      return $cache[$context];
+    }
+    return $cache;
+  }
+}
