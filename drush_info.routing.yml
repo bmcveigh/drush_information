@@ -1,5 +1,5 @@
 drush_info.view:
-  path: '/admin/config/development/drush-info'
+  path: '/admin/structure/drush-info'
   defaults:
     _title: 'Drush Commands from Modules'
     _controller: '\Drupal\drush_info\Controller\DrushInfoController::view'
