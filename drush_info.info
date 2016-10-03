@@ -1,3 +1,0 @@
-name = Drush Information
-description = Show custom drush commands from modules.
-core = 7.x

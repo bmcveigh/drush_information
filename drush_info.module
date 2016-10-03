@@ -10,113 +10,14 @@
  *   - Callback
  *   - Description
  *   - Arguments
- *   - Options
+ *   - Options.
  */
-
-/**
- * Implements hook_menu().
- */
-function drush_info_menu() {
-  $items['admin/drush-info'] = array(
-    'title' => 'Drush Commands from Modules',
-    'description' => 'Show custom drush commands from modules.',
-    'page callback' => 'drush_info_main_page_callback',
-    'access arguments' => array('access administration menu'),
-    'type' => MENU_NORMAL_ITEM,
-  );
-
-  return $items;
-}
-
-function drush_info_main_page_callback() {
-  $build = array();
-
-  $query = db_select('system', 's')
-    ->fields('s')
-    ->condition('status', '1', '=')
-    ->orderBy('name', 'ASC');
-
-  $result = $query->execute()->fetchAll();
-
-  foreach ($result as $module) {
-    $module_name = $module->name;
-
-    if (module_load_include('inc', $module_name, $module_name . '.drush')) {
-      $rows = array();
-
-      $commands = call_user_func($module_name . '_' . 'drush_command');
-
-      foreach ($commands as $command => $value) {
-        $row = array(
-          $command,
-          isset($value['aliases']) ? implode(', ', $value['aliases']) : '',
-          isset($value['callback']) ? $value['callback'] : 'drush_' . str_replace('-', '_', $command),
-          isset($value['description']) ? $value['description'] : '',
-        );
-
-        if (isset($value['arguments'])) {
-          $argument_text = '';
-
-          foreach ($value['arguments'] as $key => $val) {
-            $argument_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
-          }
-          $row[] = $argument_text;
-        }
-        else {
-          $row[] = '';
-        }
-
-        if (isset($value['options'])) {
-          $options_text = '';
-
-          foreach ($value['options'] as $key => $val) {
-            $options_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
-          }
-          $row[] = $options_text;
-        }
-        else {
-          $row[] = '';
-        }
-
-        if (isset($value['examples'])) {
-          $examples_text = '';
-
-          foreach ($value['examples'] as $key => $val) {
-            $examples_text .= '<h3><code>' . $key . '</code></h3>' . $val . '<br /><br />';
-          }
-          $row[] = $examples_text;
-        }
-        else {
-          $row[] = '';
-        }
-
-        $rows[] = $row;
-      }
-
-      $build[$module_name] = array(
-        '#type' => 'fieldset',
-        '#title' => $module->name,
-      );
-      $build[$module_name]['output_table'] = array(
-        '#theme' => 'table',
-        '#header' => array(
-          t('Command'),
-          t('Aliases'),
-          t('Callback'),
-          t('Description'),
-          t('Arguments'),
-          t('Options'),
-          t('Examples'),
-        ),
-        '#rows' => $rows,
-      );
-    }
-  }
-
-  return $build;
-}
 
 if (!function_exists('dt')) {
+
+  /**
+   * Drush function.
+   */
   function dt($string, $args = array()) {
     $output = NULL;
     if (function_exists('t') && drush_drupal_major_version() == 7) {
@@ -124,10 +25,10 @@ if (!function_exists('dt')) {
     }
     // The language system requires a working container which has the string
     // translation service.
-    else if (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
+    elseif (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
       $output = \Drupal::translation()->translate($string, $args);
     }
-    else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
+    elseif (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
       $output = t($string, $args);
     }
 
@@ -142,9 +43,14 @@ if (!function_exists('dt')) {
     }
     return $output;
   }
+
 }
 
 if (!function_exists('drush_drupal_major_version')) {
+
+  /**
+   * Drush function.
+   */
   function drush_drupal_major_version($drupal_root = NULL) {
     $major_version = FALSE;
     if ($version = drush_drupal_version($drupal_root)) {
@@ -155,9 +61,14 @@ if (!function_exists('drush_drupal_major_version')) {
     }
     return $major_version;
   }
+
 }
 
 if (!function_exists('drush_drupal_version')) {
+
+  /**
+   * Drush function.
+   */
   function drush_drupal_version($drupal_root = NULL) {
     static $version = FALSE;
 
@@ -178,9 +89,14 @@ if (!function_exists('drush_drupal_version')) {
     }
     return $version;
   }
+
 }
 
 if (!function_exists('drush_get_context')) {
+
+  /**
+   * Drush function.
+   */
   function &drush_get_context($context = NULL, $default = NULL) {
     static $cache = array();
     if (!is_null($context)) {
@@ -192,4 +108,5 @@ if (!function_exists('drush_get_context')) {
     }
     return $cache;
   }
+
 }
