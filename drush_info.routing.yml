@@ -4,4 +4,4 @@ drush_info.view:
     _title: 'Drush Commands from Modules'
     _controller: '\Drupal\drush_info\Controller\DrushInfoController::view'
   requirements:
-    _permission: 'access administration menu'
+    _permission: 'administer site configuration'
