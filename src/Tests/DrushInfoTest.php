@@ -26,8 +26,7 @@ class DrushInfoTest extends WebTestBase {
   }
 
   /**
-   * Log in as an authenticated user and check to make sure
-   * they cannot access the page.
+   * Make sure the user cannot access the page.
    */
   protected function testNonAdminUser() {
     $this->drupalLogin($this->drupalCreateUser());

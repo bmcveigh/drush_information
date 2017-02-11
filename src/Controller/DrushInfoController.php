@@ -6,7 +6,6 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class DrushInfoController.
- * Contains the main page callback for this module.
  */
 class DrushInfoController {
 
@@ -27,7 +26,8 @@ class DrushInfoController {
       || module_load_include('inc', $module, '/drush/' . $module . '.drush')) {
         $rows = array();
 
-        $commands = call_user_func($module . '_' . 'drush_command');
+        $function = "$module_drush_command";
+        $commands = call_user_func($function);
 
         foreach ($commands as $command => $value) {
           $row = array(
