@@ -22,8 +22,9 @@ information.
 TROUBLESHOOTING
 ---------------
 
-If you find you're having trouble accessing Drush Information, make sure you have
-the appropriate permissions. If that doesn't work, try clearing your cache.
+If you find you're having trouble accessing Drush Information, make sure you
+have the appropriate permissions. If that doesn't work, try clearing your
+cache.
 
 Below are three ways to clear your cache:
 1. UI - Navigate to 'admin/config/development/performance' and click
