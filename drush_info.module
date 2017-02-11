@@ -20,8 +20,9 @@ if (!function_exists('dt')) {
    */
   function dt($string, $args = array()) {
     $output = NULL;
+    $args['@string'] = $string;
     if (function_exists('t') && drush_drupal_major_version() == 7) {
-      $output = t($string, $args);
+      $output = t('@string', $args);
     }
     // The language system requires a working container which has the string
     // translation service.
@@ -29,7 +30,7 @@ if (!function_exists('dt')) {
       $output = \Drupal::translation()->translate($string, $args);
     }
     elseif (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
-      $output = t($string, $args);
+      $output = t('@string', $args);
     }
 
     // If Drupal's t() function unavailable.
@@ -75,7 +76,11 @@ if (!function_exists('drush_drupal_version')) {
     if (!$version) {
       if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
         // D7 stores VERSION in bootstrap.inc. D8 moved that to /core/includes.
-        $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc', '/core/includes/bootstrap.inc');
+        $version_constant_paths = array(
+          '/modules/system/system.module',
+          '/includes/bootstrap.inc',
+          '/core/includes/bootstrap.inc',
+        );
         foreach ($version_constant_paths as $path) {
           if (file_exists($drupal_root . $path)) {
             require_once $drupal_root . $path;
