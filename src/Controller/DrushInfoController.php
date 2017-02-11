@@ -26,7 +26,7 @@ class DrushInfoController {
       || module_load_include('inc', $module, '/drush/' . $module . '.drush')) {
         $rows = array();
 
-        $function = "$module_drush_command";
+        $function = "{$module}_drush_command";
         $commands = call_user_func($function);
 
         foreach ($commands as $command => $value) {
