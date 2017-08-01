@@ -3,6 +3,7 @@
 namespace Drupal\drush_info\Controller;
 
 use Symfony\Component\Yaml\Yaml;
+use Drupal\Core\Render\Markup;
 
 /**
  * Class DrushInfoController.
@@ -46,7 +47,7 @@ class DrushInfoController {
             foreach ($value['arguments'] as $key => $val) {
               $argument_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
             }
-            $row[] = t('!argument_text', array('!argument_text' => $argument_text));
+            $row[] = t('@argument_text', array('@argument_text' => Markup::create($argument_text)));
           }
           else {
             $row[] = '';
@@ -65,7 +66,7 @@ class DrushInfoController {
                 $options_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
               }
             }
-            $row[] = t('!options_text', array('!options_text' => $options_text));
+            $row[] = t('@options_text', array('@options_text' => Markup::create($options_text)));
           }
           else {
             $row[] = '';
@@ -77,7 +78,7 @@ class DrushInfoController {
             foreach ($value['examples'] as $key => $val) {
               $examples_text .= '<h3><code>' . $key . '</code></h3>' . $val . '<br /><br />';
             }
-            $row[] = t('!examples_text', array('!examples_text' => $examples_text));
+            $row[] = t('@examples_text', array('@examples_text' => Markup::create($examples_text)));
           }
           else {
             $row[] = '';
