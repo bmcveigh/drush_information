@@ -17,11 +17,11 @@
  * Implements hook_menu().
  */
 function drush_info_menu() {
-  $items['admin/drush-info'] = array(
+  $items['admin/structure/drush-info'] = array(
     'title' => 'Drush Commands from Modules',
     'description' => 'Show custom drush commands from modules.',
     'page callback' => 'drush_info_main_page_callback',
-    'access arguments' => array('access administration menu'),
+    'access arguments' => array('view drush info pages'),
     'type' => MENU_NORMAL_ITEM,
   );
 
@@ -29,8 +29,19 @@ function drush_info_menu() {
 }
 
 /**
- * Main module page callback for displaying all of the
- * available drush commands.
+ * Implements hook_permission().
+ */
+function drush_info_permission() {
+  return array(
+    'view drush info pages' => array(
+      'title' => t('View Drush Information Pages'),
+      'description' => t('Users with this permission can view all available drush commands provided by modules.'),
+    ),
+  );
+}
+
+/**
+ * Main page callback for displaying all drush commands.
  */
 function drush_info_main_page_callback() {
   $build = array();
@@ -182,7 +193,11 @@ if (!function_exists('drush_drupal_version')) {
     if (!$version) {
       if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
         // D7 stores VERSION in bootstrap.inc. D8 moved that to /core/includes.
-        $version_constant_paths = array('/modules/system/system.module', '/includes/bootstrap.inc', '/core/includes/bootstrap.inc');
+        $version_constant_paths = array(
+          '/modules/system/system.module',
+          '/includes/bootstrap.inc',
+          '/core/includes/bootstrap.inc',
+        );
         foreach ($version_constant_paths as $path) {
           if (file_exists($drupal_root . $path)) {
             require_once $drupal_root . $path;
