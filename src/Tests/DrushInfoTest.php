@@ -16,7 +16,7 @@ class DrushInfoTest extends WebTestBase {
    *
    * @var array
    */
-  public static $modules = array('drush_info');
+  public static $modules = ['drush_info'];
 
   /**
    * {@inheritdoc}

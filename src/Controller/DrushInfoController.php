@@ -14,7 +14,7 @@ class DrushInfoController {
    * Page callback for /admin/config/development/drush-info.
    */
   public function view() {
-    $build = array();
+    $build = [];
 
     $moduleHandler = \Drupal::moduleHandler();
     $modules = $moduleHandler->getModuleList();
@@ -24,22 +24,23 @@ class DrushInfoController {
       $info = Yaml::parse(file_get_contents($module_path . '/' . $module . '.info.yml'));
 
       if (module_load_include('inc', $module, $module . '.drush')
-      || module_load_include('inc', $module, 'drush/' . $module . '.drush')) {
-        $rows = array();
+        || module_load_include('inc', $module, 'drush/' . $module . '.drush')
+      ) {
+        $rows = [];
 
-        $commands = array();
+        $commands = [];
         $function = "{$module}_drush_command";
         if (function_exists($function)) {
           $commands = call_user_func($function);
         }
 
         foreach ($commands as $command => $value) {
-          $row = array(
+          $row = [
             $command,
             isset($value['aliases']) ? implode(', ', $value['aliases']) : '',
             isset($value['callback']) ? $value['callback'] : 'drush_' . str_replace('-', '_', $command),
             isset($value['description']) ? $value['description'] : '',
-          );
+          ];
 
           if (isset($value['arguments'])) {
             $argument_text = '';
@@ -47,7 +48,7 @@ class DrushInfoController {
             foreach ($value['arguments'] as $key => $val) {
               $argument_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
             }
-            $row[] = t('@argument_text', array('@argument_text' => Markup::create($argument_text)));
+            $row[] = t('@argument_text', ['@argument_text' => Markup::create($argument_text)]);
           }
           else {
             $row[] = '';
@@ -66,7 +67,7 @@ class DrushInfoController {
                 $options_text .= '<strong>' . $key . '</strong>: ' . $val . '<br />';
               }
             }
-            $row[] = t('@options_text', array('@options_text' => Markup::create($options_text)));
+            $row[] = t('@options_text', ['@options_text' => Markup::create($options_text)]);
           }
           else {
             $row[] = '';
@@ -78,7 +79,7 @@ class DrushInfoController {
             foreach ($value['examples'] as $key => $val) {
               $examples_text .= '<h3><code>' . $key . '</code></h3>' . $val . '<br /><br />';
             }
-            $row[] = t('@examples_text', array('@examples_text' => Markup::create($examples_text)));
+            $row[] = t('@examples_text', ['@examples_text' => Markup::create($examples_text)]);
           }
           else {
             $row[] = '';
@@ -87,13 +88,13 @@ class DrushInfoController {
           $rows[] = $row;
         }
 
-        $build[$module] = array(
+        $build[$module] = [
           '#type' => 'fieldset',
           '#title' => $info['name'],
-        );
-        $build[$module]['output_table'] = array(
+        ];
+        $build[$module]['output_table'] = [
           '#theme' => 'table',
-          '#header' => array(
+          '#header' => [
             t('Command'),
             t('Aliases'),
             t('Callback'),
@@ -101,9 +102,9 @@ class DrushInfoController {
             t('Arguments'),
             t('Options'),
             t('Examples'),
-          ),
+          ],
           '#rows' => $rows,
-        );
+        ];
       }
     }
 

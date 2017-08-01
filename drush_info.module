@@ -18,7 +18,7 @@ if (!function_exists('dt')) {
   /**
    * Drush function.
    */
-  function dt($string, $args = array()) {
+  function dt($string, $args = []) {
     $output = NULL;
     $args['@string'] = $string;
     if (function_exists('t') && drush_drupal_major_version() == 7) {
@@ -76,11 +76,11 @@ if (!function_exists('drush_drupal_version')) {
     if (!$version) {
       if (($drupal_root != NULL) || ($drupal_root = drush_get_context('DRUSH_DRUPAL_ROOT'))) {
         // D7 stores VERSION in bootstrap.inc. D8 moved that to /core/includes.
-        $version_constant_paths = array(
+        $version_constant_paths = [
           '/modules/system/system.module',
           '/includes/bootstrap.inc',
           '/core/includes/bootstrap.inc',
-        );
+        ];
         foreach ($version_constant_paths as $path) {
           if (file_exists($drupal_root . $path)) {
             require_once $drupal_root . $path;
@@ -103,10 +103,10 @@ if (!function_exists('drush_get_context')) {
    * Drush function.
    */
   function &drush_get_context($context = NULL, $default = NULL) {
-    static $cache = array();
+    static $cache = [];
     if (!is_null($context)) {
       if (!isset($cache[$context])) {
-        $default = is_null($default) ? array() : $default;
+        $default = is_null($default) ? [] : $default;
         $cache[$context] = $default;
       }
       return $cache[$context];
