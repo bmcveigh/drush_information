@@ -15,7 +15,7 @@ INSTALLATION
 ------------
 
 Install as usual, see
-https://drupal.org/documentation/install/modules-themes/modules-7 for further
+https://drupal.org/documentation/install/modules-themes/modules-8 for further
 information.
 
 
