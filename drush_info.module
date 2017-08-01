@@ -10,7 +10,7 @@
  *   - Callback
  *   - Description
  *   - Arguments
- *   - Options
+ *   - Options.
  */
 
 /**
@@ -28,6 +28,10 @@ function drush_info_menu() {
   return $items;
 }
 
+/**
+ * Main module page callback for displaying all of the
+ * available drush commands.
+ */
 function drush_info_main_page_callback() {
   $build = array();
 
@@ -117,6 +121,10 @@ function drush_info_main_page_callback() {
 }
 
 if (!function_exists('dt')) {
+
+  /**
+   * Ported from Drush source code.
+   */
   function dt($string, $args = array()) {
     $output = NULL;
     if (function_exists('t') && drush_drupal_major_version() == 7) {
@@ -124,10 +132,10 @@ if (!function_exists('dt')) {
     }
     // The language system requires a working container which has the string
     // translation service.
-    else if (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
+    elseif (drush_drupal_major_version() >= 8 && \Drupal::hasService('string_translation')) {
       $output = \Drupal::translation()->translate($string, $args);
     }
-    else if (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
+    elseif (function_exists('t') && drush_drupal_major_version() <= 7 && function_exists('theme')) {
       $output = t($string, $args);
     }
 
@@ -142,9 +150,14 @@ if (!function_exists('dt')) {
     }
     return $output;
   }
+
 }
 
 if (!function_exists('drush_drupal_major_version')) {
+
+  /**
+   * Ported from Drush source code.
+   */
   function drush_drupal_major_version($drupal_root = NULL) {
     $major_version = FALSE;
     if ($version = drush_drupal_version($drupal_root)) {
@@ -155,9 +168,14 @@ if (!function_exists('drush_drupal_major_version')) {
     }
     return $major_version;
   }
+
 }
 
 if (!function_exists('drush_drupal_version')) {
+
+  /**
+   * Ported from Drush source code.
+   */
   function drush_drupal_version($drupal_root = NULL) {
     static $version = FALSE;
 
@@ -178,9 +196,14 @@ if (!function_exists('drush_drupal_version')) {
     }
     return $version;
   }
+
 }
 
 if (!function_exists('drush_get_context')) {
+
+  /**
+   * Ported from Drush source code.
+   */
   function &drush_get_context($context = NULL, $default = NULL) {
     static $cache = array();
     if (!is_null($context)) {
@@ -192,4 +215,5 @@ if (!function_exists('drush_get_context')) {
     }
     return $cache;
   }
+
 }

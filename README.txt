@@ -39,4 +39,3 @@ MAINTAINERS
 Current maintainers:
 
  * Brian McVeigh (https://drupal.org/user/3082379)
-
