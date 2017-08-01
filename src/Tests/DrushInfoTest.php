@@ -19,13 +19,6 @@ class DrushInfoTest extends WebTestBase {
   public static $modules = ['drush_info'];
 
   /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-  }
-
-  /**
    * Make sure the user cannot access the page.
    */
   protected function testNonAdminUser() {
