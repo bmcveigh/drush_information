@@ -23,7 +23,7 @@ class DrushInfoController {
       $info = Yaml::parse(file_get_contents($module_path . '/' . $module . '.info.yml'));
 
       if (module_load_include('inc', $module, $module . '.drush')
-      || module_load_include('inc', $module, '/drush/' . $module . '.drush')) {
+      || module_load_include('inc', $module, 'drush/' . $module . '.drush')) {
         $rows = array();
 
         $commands = array();
