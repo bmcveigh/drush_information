@@ -18,6 +18,12 @@ Install as usual, see
 https://drupal.org/documentation/install/modules-themes/modules-8 for further
 information.
 
+HOW TO ACCESS
+-------------
+
+To view the available drush commands provided by enabled modules, go to
+/admin/structure/drush-info.
+
 
 TROUBLESHOOTING
 ---------------
