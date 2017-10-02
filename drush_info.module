@@ -13,6 +13,20 @@
  *   - Options.
  */
 
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function drush_info_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the drush_info module.
+    case 'help.page.drush_info':
+      $module_path = drupal_get_path('module', 'drush_info');
+      return nl2br(file_get_contents($module_path . '/README.txt'));
+  }
+}
+
 if (!function_exists('dt')) {
 
   /**
