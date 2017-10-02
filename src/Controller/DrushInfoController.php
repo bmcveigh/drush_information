@@ -18,6 +18,7 @@ class DrushInfoController {
 
     $moduleHandler = \Drupal::moduleHandler();
     $modules = $moduleHandler->getModuleList();
+    $counter = FALSE;
 
     foreach ($modules as $module => $data) {
       $module_path = drupal_get_path('module', $module);
@@ -26,6 +27,7 @@ class DrushInfoController {
       if (module_load_include('inc', $module, $module . '.drush')
         || module_load_include('inc', $module, 'drush/' . $module . '.drush')
       ) {
+        $counter = TRUE;
         $rows = [];
 
         $commands = [];
@@ -106,6 +108,10 @@ class DrushInfoController {
           '#rows' => $rows,
         ];
       }
+    }
+    // Display error message in case of no module found with drush command.
+    if (!$counter) {
+      drupal_set_message(t('None of the modules that are installed contain drush commands.'), 'error');
     }
 
     return $build;
